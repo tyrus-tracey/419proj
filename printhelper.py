@@ -38,7 +38,7 @@ def printAttackJudgement(judgement: json):
     else:
         result = Fore.LIGHTRED_EX + "ATTACK FAILED"+ Style.RESET_ALL
 
-    print(Fore.LIGHTWHITE_EX+ Back.BLACK + "ATTACK JUDGEMENT: " + result + Style.RESET_ALL)
+    print(Fore.LIGHTWHITE_EX+ Back.BLACK + "SCENARIO JUDGEMENT: " + result + Style.RESET_ALL)
     print(Fore.LIGHTWHITE_EX+ Back.BLACK + "REASON:")
     print(Fore.LIGHTYELLOW_EX + judgement["reason"] + Style.RESET_ALL)
 

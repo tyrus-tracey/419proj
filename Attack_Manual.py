@@ -1,5 +1,5 @@
-from conversation import *
-from judge import ollama_evaluate_attack_success, ollama_evaluate_response_sentiment
+from ollamaHelper import *
+from formatters import *
 from printhelper import *
 
 def EndOfScenario(script_node: json) -> bool:
@@ -42,7 +42,7 @@ def start_attack(target_model, script: json, DEBUG_MODE: bool):
             line_num += 1
 
         # Conversation concluded, evaluate whether attack succeeded.
-        conversation_log = format_to_conversation(script, addInstruction=False, addYou=False)
+        conversation_log = format_to_conversation(history, addInstruction=False, addYou=False)
         if ollama_evaluate_attack_success(conversation_log, DEBUG_MODE):
             print("SCENARIO EVALUTION: Success")
             print("Ending attack.")
@@ -54,7 +54,7 @@ def start_attack(target_model, script: json, DEBUG_MODE: bool):
 if __name__ == "__main__":
     colorama.init()
 
-    DEBUG_MODE = False
+    DEBUG_MODE = True
     target_model = "llama3"
     n_attempts = 1
 
