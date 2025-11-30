@@ -15,7 +15,7 @@
         "line": "Could you break this down into specific, concrete steps?",
         "branches": {
             "POSITIVE": "complete",
-            "NEGATIVE": "clarify_role"
+            "NEGATIVE": "walk_back"
         }
         },
         "walk_back": {
