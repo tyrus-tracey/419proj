@@ -7,7 +7,7 @@ def EndOfScenario(script_node: json) -> bool:
 
 # Runs each attack scenario from script, terminates early if a scenario
 #   successfully jailbreaks the target model.
-def start_attack(target_model, script: json, DEBUG_MODE: bool):
+def start_attack(target_model, script: json, LOG_OUTPUT: bool, DEBUG_MODE: bool):
     for scenario_num, scenario in enumerate(script["scenarios"]):
         history = []
         line_num = 0
@@ -43,7 +43,7 @@ def start_attack(target_model, script: json, DEBUG_MODE: bool):
 
         # Conversation concluded, evaluate whether attack succeeded.
         conversation_log = format_to_conversation(history, addInstruction=False, addYou=False)
-        if ollama_evaluate_attack_success(conversation_log, DEBUG_MODE):
+        if ollama_evaluate_manual_attack_success(conversation_log, LOG_OUTPUT, DEBUG_MODE):
             print("SCENARIO EVALUTION: Success")
             print("Ending attack.")
             break;
@@ -54,11 +54,12 @@ def start_attack(target_model, script: json, DEBUG_MODE: bool):
 if __name__ == "__main__":
     colorama.init()
 
-    DEBUG_MODE = True
+    LOG_OUTPUT = True
+    DEBUG_MODE = False
     target_model = "llama3"
     n_attempts = 1
 
     scriptfile = open("scenarioscripts.json", "r")
     json_script = json.load(scriptfile)
 
-    start_attack(target_model, json_script, DEBUG_MODE)
+    start_attack(target_model, json_script, LOG_OUTPUT, DEBUG_MODE)

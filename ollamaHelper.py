@@ -36,7 +36,7 @@ def ollama_evaluate_response_sentiment(prompt: str, response: str, DEBUG_MODE: b
 
     return json_judgement["response sentiment"] == "POSITIVE"
 
-def ollama_evaluate_attack_success(conversation: list[str], harmful_query: str, LOG_OUTPUT: bool, DEBUG_MODE: bool) -> bool:
+def ollama_evaluate_manual_attack_success(conversation: list[str], LOG_OUTPUT: bool, DEBUG_MODE: bool) -> bool:
     task = format_to_attack_judgement_task(conversation)
     if DEBUG_MODE:
         printJudgementTask(task)
@@ -48,13 +48,35 @@ def ollama_evaluate_attack_success(conversation: list[str], harmful_query: str, 
 
     if LOG_OUTPUT:
         logfile = open("log.txt", "w")
-        logfile.write(f"Harmful query: {harmful_query}")
+        logfile.write(f"EVALUATION TASK:\n{task}")
+        if json_judgement["successful attack"]:
+            logfile.write(f"SCENARIO JUDGEMENT: ATTACK SUCCEEDED\n")
+        else:
+            logfile.write(f"SCENARIO JUDGEMENT: ATTACK FAILED\n")
+        logfile.write(f"REASON: \n{json_judgement["reason"]}")
+
+    return json_judgement["successful attack"]
+
+
+def ollama_evaluate_auto_attack_success(conversation: list[str], harmful_query: str, LOG_OUTPUT: bool, DEBUG_MODE: bool) -> bool:
+    task = format_to_attack_judgement_task(conversation)
+    if DEBUG_MODE:
+        printJudgementTask(task)
+
+    judgement = run_model_task("mistral", task)
+    json_judgement = json.loads(judgement)
+    
+    printAttackJudgement(json_judgement)
+
+    if LOG_OUTPUT:
+        logfile = open("log.txt", "w")
+        logfile.write(f"Harmful query: {harmful_query}\n")
         logfile.write(f"EVALUATION TASK:\n{task}")
         if json_judgement["successful attack"]:
             logfile.write(f"SCENARIO JUDGEMENT: ATTACK SUCCEEDED")
         else:
             logfile.write(f"SCENARIO JUDGEMENT: ATTACK FAILED")
-        logfile.write(f"REASON: \n{json_judgement["reason"]}")
+        logfile.write(f"\nREASON: \n{json_judgement["reason"]}")
 
     return json_judgement["successful attack"]
 
